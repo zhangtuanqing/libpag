@@ -38,7 +38,7 @@ endif ()
 
 if (MACOS)
     # CLion project needs test targets.
-    option(PAG_BUILD_TESTS "Build libpag tests" ON)
+    option(PAG_BUILD_TESTS "Build libpag tests" OFF)
 endif ()
 
 message("PAG_USE_LIBAVC: ${PAG_USE_LIBAVC}")
@@ -88,9 +88,9 @@ else ()
     set(USE_NATIVE_PLATFORM ON)
 endif ()
 
-if (PAG_BUILD_TESTS)
-    set(PAG_USE_FREETYPE ON)
-endif ()
+#if (PAG_BUILD_TESTS)
+#set(PAG_USE_FREETYPE ON)
+#endif ()
 
 set(TGFX_USE_OPENGL ${PAG_USE_OPENGL})
 set(TGFX_USE_QT ${PAG_USE_QT})

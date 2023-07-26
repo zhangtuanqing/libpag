@@ -55,7 +55,8 @@ std::string DumpMD5(const void* bytes, size_t size) {
   char buffer[32];
   char* position = buffer;
   for (unsigned char i : digest) {
-    sprintf(position, "%02x", i);
+    snprintf(position, 32,
+            "%02x", i);
     position += 2;
   }
   return {buffer, 32};
