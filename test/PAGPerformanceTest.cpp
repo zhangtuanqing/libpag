@@ -21,7 +21,7 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
-//#include "TestUtils.h"
+#include "TestUtils.h"
 #include "base/utils/TimeUtil.h"
 #include "core/Clock.h"
 #include "framework/pag_test.h"

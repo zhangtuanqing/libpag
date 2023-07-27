@@ -76,7 +76,6 @@ void FTMask::fillPath(const Path& path) {
   ftPath.setFillType(path.getFillType());
   auto outlines = ftPath.getOutlines();
   Bitmap bm(buffer);
-
   FT_Bitmap bitmap;
   bitmap.width = info.width();
   bitmap.rows = info.height();

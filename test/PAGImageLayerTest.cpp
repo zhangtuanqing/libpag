@@ -140,7 +140,7 @@ PAG_TEST_F(PAGImageLayerTest, setImage) {
 
   auto image = PAGImage::FromPath("../resources/apitest/imageReplacement.png");
   auto pagImageLayer = pagFile->getLayersByEditableIndex(0, pag::LayerType::Image)[0];
-  // std::static_pointer_cast<PAGImageLayer>(pagImageLayer)->setImage(image);
+  std::static_pointer_cast<PAGImageLayer>(pagImageLayer)->setImage(image);
   TestPAGPlayer->setComposition(pagFile);
   TestPAGPlayer->setProgress(0.3);
   TestPAGPlayer->flush();
