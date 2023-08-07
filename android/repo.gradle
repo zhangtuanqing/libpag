@@ -1,0 +1,25 @@
+
+def configRepo = {   mavenDeployer ->  // DefaultGroovyMavenDeployer
+
+    def PUBLISH_TEST = rootProject.PUBLISH_TEST.toBoolean()
+    println "PUBLISH_TEST ${PUBLISH_TEST}"
+
+    if(!PUBLISH_TEST) {
+        mavenDeployer.repository(url: rootProject.ext.RELEASE_REPOSITORY_URL) {
+            println "userName ${rootProject.ext.NEXUS_USERNAME}"
+            println "password ${rootProject.ext.NEXUS_PASSWORD}"
+            authentication(userName: rootProject.ext.NEXUS_USERNAME, password: rootProject.ext.NEXUS_PASSWORD)
+        }
+
+        mavenDeployer.snapshotRepository(url: rootProject.ext.SNAPSHOT_REPOSITORY_URL) {
+            authentication(userName: rootProject.ext.NEXUS_USERNAME, password: rootProject.ext.NEXUS_PASSWORD)
+        }
+    } else {
+        def url = rootProject.hasProperty("PUBLISH_PATH") ? rootProject.PUBLISH_PATH
+                : "${System.getProperty("user.home")}/.m2/repository"
+        println "PUBLISH_PATH: ${url}, ${uri(url)}"
+        mavenDeployer.repository(url: uri("${url}"))
+        mavenDeployer.snapshotRepository(url: uri("${url}"))
+    }
+}
+project.ext.configRepo = configRepo

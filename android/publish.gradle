@@ -1,0 +1,12 @@
+apply plugin: 'maven'
+
+Properties properties = new Properties()
+
+project.ext {
+    //上传的目标仓库地址
+    SNAPSHOT_REPOSITORY_URL = 'http://180.76.238.175:8081/repository/maven-snapshots/'
+    RELEASE_REPOSITORY_URL = 'http://180.76.238.175:8081/repository/maven-releases/'
+    //maven 的用户名称和密码
+    NEXUS_USERNAME = properties.getProperty("nexus_username")
+    NEXUS_PASSWORD = properties.getProperty("nexus_password")
+}

@@ -4,9 +4,8 @@ apply plugin: 'com.android.library'
 //apply plugin: 'signing'
 apply plugin: 'com.kezong.fat-aar'
 
-version = '4.0.0.0'
-project.ext.artifactId = 'libpag'
-project.group = 'com.tencent.tav'
+group 'com.tencent.tav'
+version "$LIBPAG_VERSION"
 
 android {
     compileSdkVersion 29
@@ -68,154 +67,30 @@ task androidSourcesJar(type: Jar) {
     exclude "**/BuildConfig.class"
 }
 
-//publish {
-//    userOrg = 'libpag'
-//    groupId = 'com.tencent.tav'
-//    artifactId = 'libpag'
-//    publishVersion = project.version
-//    desc = 'A real-time rendering library for PAG (Portable Animated Graphics) files that renders After Effects animations natively across multiple platforms.'
-//    website = 'https://github.com/Tencent/libpag'
-//}
-
-//publishing {
-//    publications {
-//        mavenAar(MavenPublication) {
-//            // group id，发布后引用的依赖的 group id
-//            groupId 'com.tencent.tav'
-//            // 发布后引用的依赖的 artifact id
-//            artifactId 'libpag'
-//            println version
-//            // 发布的 arr 的文件和源码文件
-//            artifact("$buildDir/outputs/aar/libpag-release.aar")
-//            artifact androidSourcesJar
-//            pom {
-//                // 构件名称，可以自定义
-//                name = 'libpag'
-//                // 构件描述
-//                description = 'A real-time rendering library for PAG (Portable Animated Graphics) files that renders After Effects animations natively across multiple platforms.'
-//                // 构件主页
-//                url = 'https://github.com/Tencent/libpag'
-//                // 许可证名称和地址
-//                licenses {
-//                    license {
-//                        name = 'The Apache License, Version 2.0'
-//                        url = 'https://github.com/Tencent/libpag/blob/main/LICENSE.txt'
-//                    }
-//                }
-//                // 开发者信息
-//                developers {
-//                    developer {
-//                        name = 'libpag'
-//                        email = 'libpag@tencent.com'
-//                    }
-//                }
-//                // 版本控制仓库地址
-//                scm {
-//                    url = 'https://github.com/Tencent/libpag'
-//                    connection = 'scm:git:github.com/Tencent/libpag.git'
-//                    developerConnection = 'scm:git:ssh://git@github.com/Tencent/libpag.git'
-//                }
-//            }
-//        }
-//    }
-//    repositories {
-//        maven {
-//            // 发布的位置，这里根据发布的版本区分了 SNAPSHOT 和最终版本两种情况
-//            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-//            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
-//            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-//        }
-//    }
-//}
-
-//signing {
-//    sign publishing.publications
-//}
-
-project.afterEvaluate {
-    // 如果使用自动拷贝功能，需要保证NDK是16，否则会生成没有经过strip的包
-//    transformNativeLibsWithMergeJniLibsForRelease.doLast {
-//        delete {
-//            delete 'build/intermediates/transforms/mergeJniLibs/release/0/lib/armeabi'
-//        }
-//        copy {
-//            from 'build/intermediates/transforms/mergeJniLibs/release/0/lib/armeabi-v7a'
-//            into 'build/intermediates/transforms/mergeJniLibs/release/0/lib/armeabi'
-//            include '*.so'
-//        }
-//    }
-//    transformNativeLibsWithStripDebugSymbolForRelease.doLast {
-//        delete {
-//            delete 'build/intermediates/transforms/stripDebugSymbol/release/0/lib/armeabi'
-//        }
-//        copy {
-//            from 'build/intermediates/transforms/stripDebugSymbol/release/0/lib/armeabi-v7a'
-//            into 'build/intermediates/transforms/stripDebugSymbol/release/0/lib/armeabi'
-//            include '*.so'
-//        }
-//    }
-//    // 新的Skia导致使用NDK16也无法编译armeabi版本
-//    // 此处为了方便debug，保留debug版本armeabi的拷贝，方便源码接入时候的调试
-//    transformNativeLibsWithMergeJniLibsForDebug.doLast {
-//        delete {
-//            delete 'build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi'
-//        }
-//        copy {
-//            from 'build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi-v7a'
-//            into 'build/intermediates/transforms/mergeJniLibs/debug/0/lib/armeabi'
-//            include '*.so'
-//        }
-//    }
-//    transformNativeLibsWithStripDebugSymbolForDebug.doLast {
-//        delete {
-//            delete 'build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi'
-//        }
-//        copy {
-//            from 'build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi-v7a'
-//            into 'build/intermediates/transforms/stripDebugSymbol/debug/0/lib/armeabi'
-//            include '*.so'
-//        }
-//    }
-//    publishing {
-//        repositories {
-//        }
-//        publications {
-//            aar(MavenPublication) {
-//                groupId project.group
-//                artifactId project.artifactId
-//                version project.version
-//
-//                artifact bundleReleaseAar
-//
-//                //The publication doesn't know about our dependencies, so we have to manually add them to the pom
-//                pom.withXml {
-//                    // for dependencies and exclusions
-//                    def dependenciesNode = asNode().appendNode('dependencies')
-//                    configurations.api.allDependencies.withType(ModuleDependency) { ModuleDependency dp ->
-//                        def dependencyNode = dependenciesNode.appendNode('dependency')
-//                        dependencyNode.appendNode('groupId', dp.group)
-//                        dependencyNode.appendNode('artifactId', dp.name)
-//                        dependencyNode.appendNode('version', dp.version)
-//
-//                        // for exclusions
-//                        if (dp.excludeRules.size() > 0) {
-//                            def exclusions = dependencyNode.appendNode('exclusions')
-//                            dp.excludeRules.each { ExcludeRule ex ->
-//                                def exclusion = exclusions.appendNode('exclusion')
-//                                exclusion.appendNode('groupId', ex.group)
-//                                exclusion.appendNode('artifactId', ex.module)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-}
-
 buildscript {
     repositories {
         maven { url "https://mirrors.tencent.com/nexus/repository/maven-public/" }
     }
     dependencies { classpath 'com.github.panpf.bintray-publish:bintray-publish:1.0.0' }
+}
+
+
+apply plugin: 'maven'
+apply from: '../publish.gradle'
+apply from: '../repo.gradle'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            configRepo(delegate)
+            pom.project {
+                groupId 'com.tencent.tav'
+                artifactId 'duer-libpag'
+                version "$LIBPAG_VERSION"
+                packaging 'aar'
+                description 'duer libpag'
+                println "version: $LIBPAG_VERSION"
+            }
+        }
+    }
 }
