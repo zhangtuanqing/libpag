@@ -61,9 +61,9 @@ class RectanglePack {
   }
 
   Point addRect(int w, int h) {
+    w += padding;
     h += padding;
     auto area = (_width - x) * (_height - y);
-    // 如果上方或者下方区域更大，那么就顶部或者左边放置位图，否则如果剩余的矩形空间更大，就在当前位置放置位图
     if ((x + w - _width) * y > area || (y + h - _height) * x > area) {
       if (_width <= _height) {
         x = _width;
@@ -75,19 +75,16 @@ class RectanglePack {
         _height += h;
       }
     }
-
-    auto point = Point::Make(static_cast<float>(x), static_cast<float>(y));
+    auto point = Point::Make(x, y);
     if (x + w - _width < y + h - _height) {
       x += w;
       _height = std::max(_height, y + h);
-      // 如果在当前位置放置位图（即area空间足够），有可能放置的位图的宽度比当前的_width要大，这里需要更新_width
       _width = std::max(_width, x);
     } else {
       y += h;
       _width = std::max(_width, x + w);
       _height = std::max(_height, y);
     }
-
     return point;
   }
 
