@@ -99,8 +99,6 @@ TextLayout CreateTextLayout(const TextDocument* textDocument,
                                               : textDocument->leading;
   // add by ztq: 对于不同字体大小的文本，设置不同的行间距.因为上层不允许设置行间距
   layout.lineGap = roundf(textDocument->fontSize * LINE_GAP_FACTOR);
-
-  textDocument->leading, textDocument->fontSize, textDocument->tracking);
   layout.tracking = roundf(textDocument->tracking * textDocument->fontSize * 0.001f);
   layout.baselineShift = textDocument->baselineShift;
   layout.justification = textDocument->justification;
