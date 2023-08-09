@@ -22,6 +22,7 @@
 #include "rendering/graphics/Shape.h"
 #include "rendering/graphics/Text.h"
 #include "tgfx/core/PathEffect.h"
+#include "base/utils/Log.h"
 
 namespace pag {
 
@@ -93,8 +94,13 @@ TextLayout CreateTextLayout(const TextDocument* textDocument,
       layout.coordinateMatrix.setTranslate(textDocument->boxTextPos.x, textDocument->boxTextPos.y);
     }
   }
+  
   layout.lineGap = textDocument->leading == 0 ? roundf(textDocument->fontSize * LINE_GAP_FACTOR)
                                               : textDocument->leading;
+  // add by ztq: 对于不同字体大小的文本，设置不同的行间距.因为上层不允许设置行间距
+  layout.lineGap = roundf(textDocument->fontSize * LINE_GAP_FACTOR);
+
+  textDocument->leading, textDocument->fontSize, textDocument->tracking);
   layout.tracking = roundf(textDocument->tracking * textDocument->fontSize * 0.001f);
   layout.baselineShift = textDocument->baselineShift;
   layout.justification = textDocument->justification;
@@ -120,19 +126,38 @@ static size_t CalculateNextLineIndex(const std::vector<GlyphInfo>& glyphList, si
   while (index < glyphCount) {
     auto& glyph = glyphList[index];
     index++;
-    *lineWidth += glyph.advance * scaleFactor;
-
-    if (hasPrevious) {
-      *lineWidth += tracking;
+    // add by ztq: 如果当前字符是换行符，那么不应该将宽度计算到当前行
+    if (glyph.name[0] != '\n') {
+      *lineWidth += glyph.advance * scaleFactor;
+      if (hasPrevious) {
+        *lineWidth += tracking;
+      }
     }
+   
     hasPrevious = true;
 
-    auto nextGlyphWidth = index < glyphCount ? glyphList[index].advance * scaleFactor : 0;
+    // add by ztq: 如果下一个字符是换行符，那么不应该将宽度计算进来，会影响边界情况的计算
+    auto nextGlyphWidth = 0.0f;
+    if (index < glyphCount) {
+      auto& nextGlyph = glyphList[index];
+      if (nextGlyph.name[0] == '\n') {
+        nextGlyphWidth = 0.0f;
+      } else {
+        nextGlyphWidth = nextGlyph.advance * scaleFactor;
+      }
+    } else {
+      nextGlyphWidth = 0.0f;
+    }
     if (glyph.name[0] == '\n' ||  // line breaker.
         *lineWidth + tracking + nextGlyphWidth > maxWidth) {
+      // add by ztq: 如果当前字符不是换行符并且下一个字符是换行符，那么跳过换行符，否则会有空行(多计算了一行的高度)
+      if ((glyph.name[0] != '\n') && (index < glyphCount) && (glyphList[index].name[0] == '\n')) {
+        index++; //skip '\n'
+      }
       break;
     }
   }
+
   return index;
 }
 
@@ -331,7 +356,6 @@ static std::vector<std::vector<GlyphInfo*>> ApplyLayoutToGlyphInfos(
       bounds->join(emptyLineBounds);
     }
     baseLine += layout.lineGap;
-
     lineIndex++;
   }
   return lineList;
