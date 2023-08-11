@@ -316,7 +316,7 @@ std::unique_ptr<TextAtlas> TextAtlas::Make(const TextGlyphs* textGlyphs, RenderC
   auto context = renderCache->getContext();
   auto maxTextureSize = context->caps()->maxTextureSize;
   // add by ztq: 字体显示更锐利
-  scale = 1.4;
+  scale = 1.5;
   auto maxScale = scale * textGlyphs->maxScale();
   const auto& maskGlyphs = textGlyphs->maskAtlasGlyphs();
   if (maskGlyphs.empty() || maskGlyphs[0]->getFont().getSize() * maxScale > MaxAtlasFontSize) {
