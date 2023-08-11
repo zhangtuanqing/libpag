@@ -308,12 +308,15 @@ bool Atlas::getLocator(const tgfx::BytesKey& bytesKey, AtlasLocator* locator) co
   return true;
 }
 
-static constexpr float MaxAtlasFontSize = 256.f;
+// add by ztq: changee 256f -> 384f
+static constexpr float MaxAtlasFontSize = 384.f;
 
 std::unique_ptr<TextAtlas> TextAtlas::Make(const TextGlyphs* textGlyphs, RenderCache* renderCache,
                                            float scale) {
   auto context = renderCache->getContext();
   auto maxTextureSize = context->caps()->maxTextureSize;
+  // add by ztq: 字体显示更锐利
+  scale = 1.4;
   auto maxScale = scale * textGlyphs->maxScale();
   const auto& maskGlyphs = textGlyphs->maskAtlasGlyphs();
   if (maskGlyphs.empty() || maskGlyphs[0]->getFont().getSize() * maxScale > MaxAtlasFontSize) {
